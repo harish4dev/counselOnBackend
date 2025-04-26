@@ -2,6 +2,7 @@ import express, { Application, Request, Response } from 'express';
 import cors from 'cors';
 import bodyParser from 'body-parser';
 import dotenv from 'dotenv';
+import userRoutes from './routes/userRoutes'
 
 
 dotenv.config();
@@ -14,7 +15,7 @@ app.use(cors());
 app.use(bodyParser.json());
 
 // Routes
-
+app.use('/user',userRoutes)
 
 app.get('/', (req: Request, res: Response) => {
   res.send('API Running...');
