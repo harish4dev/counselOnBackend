@@ -12,7 +12,7 @@ export const registerUser = async (email: string, password: string) => {
 
   // Hash the password
   const hashedPassword = await bcrypt.hash(password, 10);
-  
+
   const newUser = await prisma.user.create({
     data: {
       email,
@@ -23,7 +23,7 @@ export const registerUser = async (email: string, password: string) => {
   return newUser;
 };
 
-// Login User (Issue JWT Token)
+// Login User (Issue JWT Token )
 export const loginUser = async (email: string, password: string) => {
   const user = await prisma.user.findUnique({ where: { email } });
 
@@ -38,7 +38,21 @@ export const loginUser = async (email: string, password: string) => {
   }
 
   // Create a JWT token
-  const token = jwt.sign({ userId: user.id }, process.env.JWT_SECRET || 'secret', { expiresIn: '1h' });
+  const token = jwt.sign({ userId: user.id }, process.env.JWT_SECRET || 'secret', { expiresIn: '7d' });
+
 
   return { token };
 };
+
+//get user by id
+export const getUserById = async (userId: number) => {
+  const user = await prisma.user.findUnique({
+    where: { id: userId },
+    select: { id: true, email: true, name: true }, // You can customize fields here
+  });
+
+  return user;
+};
+
+
+
