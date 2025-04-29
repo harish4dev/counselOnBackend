@@ -1,5 +1,6 @@
 import { Request, Response } from 'express';
-import { registerUser, loginUser, getUserById } from '../services/userService';
+import { registerUser, loginUser, getUserById,verifyUserEmail } from '../services/userService';
+import jwt, { JwtPayload } from 'jsonwebtoken'
 
 interface AuthRequest {
   user?:{userId:number}
@@ -62,3 +63,35 @@ export const logout =(req:Request ,res:Response)=>{
     res.status(400).json({ message: error.message });
   }
 }
+
+//Email verififcation
+
+export const verifyEmail = async (req: Request, res: Response) => {
+  const { token } = req.query;
+
+  if (typeof token !== 'string') {
+    res.status(400);
+    return;
+  }
+
+  try {
+    const decoded = jwt.verify(token, process.env.JWT_EMAIL_SECRET as string);
+
+    if (typeof decoded !== 'object' || !('userId' in decoded)) {
+      res.status(400).json({ success: false, message: 'Invalid token' });
+    }
+
+    const { userId } = decoded as JwtPayload;
+
+    const success = await verifyUserEmail(userId as number);
+
+    if (success) {
+       res.status(200).json({message:"verification successfull"})
+    } else {
+       res.status(400).json({message:"Error verifying your email"})
+    }
+  } catch (err) {
+    console.error(err);
+    res.status(400).json({message:"Error verifying your email"})
+  }
+};

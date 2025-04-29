@@ -1,5 +1,5 @@
 import express from 'express';
-import { register, login , userProfile, logout} from '../controller/userController';
+import { register, login , userProfile, logout, verifyEmail} from '../controller/userController';
 import { authenticate } from '../middleware/authMiddleware';
 
 const router = express.Router();
@@ -13,4 +13,6 @@ router.post('/login', login);
 router.get('/userProfile',authenticate,userProfile)
 // Profile route
 router.get('/logout',logout)
+
+router.get('/verify-email',verifyEmail)
 export default router;

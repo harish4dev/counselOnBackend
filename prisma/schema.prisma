@@ -21,5 +21,6 @@ model User {
   password   String
   role       String   @default("seeker")
   createdAt  DateTime @default(now())
+  verified   Boolean  @default(false)
 }
 
