@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import { registerUser, loginUser, getUserById,verifyUserEmail } from '../services/userService';
+import { registerUser, loginUser, getUserById,verifyUserEmail, forgotPasswordService, resetPasswordService } from '../services/userService';
 import jwt, { JwtPayload } from 'jsonwebtoken'
 
 interface AuthRequest {
@@ -95,3 +95,25 @@ export const verifyEmail = async (req: Request, res: Response) => {
     res.status(400).json({message:"Error verifying your email"})
   }
 };
+
+// forgot password
+
+export const forgotPassword = async (req: Request, res: Response) => {
+  const { email } = req.body;
+  const success = await forgotPasswordService(email)
+ if(!success){
+  res.status(400).send("user not found")
+ }
+ res.status(200).send("reseen link has been sent to email")
+}
+
+//Reset password
+
+export const resetPassword = async (req:Request,res:Response) =>{
+  const {token , newPassword} = req.body;
+  const success = await resetPasswordService(token,newPassword)
+  if(!success){
+    res.status(400).json({message:"error while upadating the password try again later"})
+  }
+  res.status(200).send("password updated successfully you can loging using new password")
+}
